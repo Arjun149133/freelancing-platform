@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: freelancing-platform
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app  # Mounts your project directory to /app in the container
+      - /app/node_modules  # Prevents mounting node_modules from the host system
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
