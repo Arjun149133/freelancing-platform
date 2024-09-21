@@ -1,0 +1,255 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("NEXT_PUBLIC_DATABASE_URL")
+  directUrl = env("NEXT_PUBLIC_DIRECT_URL")
+}
+
+model User {
+  id                  String     @id @default(uuid())
+  first_name          String
+  last_name           String
+  email               String     @unique
+  password            String?
+  role                Role
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  profile             Profile?
+  proposals           Proposal[]
+  previousWork        Work[]
+  reviewsGiven        Review[]   @relation("ClientReviews")
+  reviewsReceived     Review[]   @relation("FreelancerReviews")
+  clientContracts     Contract[] @relation("ClientContracts")
+  freelancerContracts Contract[] @relation("FreelancerContracts")
+  payments            Payment[]
+  user1Chats          Chat[]     @relation("UserChatsUser1")
+  user2Chats          Chat[]     @relation("UserChatsUser2")
+  sentMessages        Message[]  @relation("SentMessages")
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  user1Id   String
+  user2Id   String
+  messages  Message[] @relation("ChatMessages")
+  createdAt DateTime  @default(now())
+  user1     User      @relation("UserChatsUser1", fields: [user1Id], references: [id])
+  user2     User      @relation("UserChatsUser2", fields: [user2Id], references: [id])
+}
+
+model Message {
+  id       String   @id @default(uuid())
+  chatId   String
+  senderId String
+  content  String
+  sentAt   DateTime @default(now())
+  isRead   Boolean  @default(false)
+  chat     Chat     @relation("ChatMessages", fields: [chatId], references: [id])
+  sender   User     @relation("SentMessages", fields: [senderId], references: [id])
+}
+
+model Profile {
+  id                String        @id @default(uuid())
+  userId            String        @unique
+  bio               String?
+  profilePictureUrl String?
+  skills            Skill[]       @relation("ProfileSkills")
+  experience        Experience[]  @relation("ProfileExperience")
+  education         Education[]   @relation("ProfileEducation")
+  certificates      Certificate[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Education {
+  id           String    @id @default(uuid())
+  profileId    String
+  schoolName   String
+  degree       String
+  fieldOfStudy String
+  startDate    DateTime
+  endDate      DateTime?
+  profile      Profile   @relation("ProfileEducation", fields: [profileId], references: [id])
+}
+
+model Certificate {
+  id         String    @id @default(uuid())
+  profileId  String
+  name       String
+  issuingOrg String
+  issueDate  DateTime
+  expiryDate DateTime?
+  profile    Profile   @relation(fields: [profileId], references: [id])
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  contractId    String // Reference to the contract related to the payment
+  userId        String // Reference to the user (client or freelancer)
+  amount        Float // Amount being paid
+  status        PaymentStatus @default(PENDING) // Status of the payment
+  paymentMethod PaymentMethod // Method of payment
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  contract      Contract      @relation(fields: [contractId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+}
+
+model Contract {
+  id           String         @id @default(uuid())
+  projectId    String
+  clientId     String
+  freelancerId String
+  terms        String?
+  amount       Float
+  status       ContractStatus @default(PENDING)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  startDate    DateTime?
+  endDate      DateTime?
+  job          Project        @relation(fields: [projectId], references: [id])
+  client       User           @relation("ClientContracts", fields: [clientId], references: [id])
+  freelancer   User           @relation("FreelancerContracts", fields: [freelancerId], references: [id])
+  payments     Payment[]
+  work         Work[]
+}
+
+model Experience {
+  id          String    @id @default(uuid())
+  userId      String // The user who owns this experience
+  companyName String // Name of the company or organization
+  role        String // Job title or role of the user
+  startDate   DateTime // When the user started this job
+  endDate     DateTime? // When the user ended this job (nullable for current positions)
+  description String? // Optional description of responsibilities and achievements
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  profile     Profile   @relation("ProfileExperience", fields: [profileId], references: [id])
+  profileId   String
+}
+
+model Work {
+  id               String   @id @default(uuid())
+  userId           String
+  projectTitle     String
+  clientName       String
+  projectStartDate DateTime
+  projectEndDate   DateTime
+  earnings         Float
+  rating           Float?
+  description      String?
+  user             User     @relation(fields: [userId], references: [id])
+  contract         Contract @relation(fields: [contractId], references: [id])
+  contractId       String
+}
+
+model Project {
+  id           String     @id @default(uuid())
+  title        String
+  description  String
+  budget       Float
+  clientId     String
+  freelancerId String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  categoryId   Int
+  Review       Review[]
+  Contract     Contract[]
+}
+
+model Proposal {
+  id           String         @id @default(uuid())
+  jobId        Int
+  freelancerId Int
+  coverLetter  String
+  price        Float
+  createdAt    DateTime       @default(now())
+  status       ProposalStatus @default(PENDING)
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+}
+
+model Review {
+  id           String   @id @default(uuid())
+  jobId        String
+  clientId     String
+  freelancerId String
+  rating       Float
+  feedback     String
+  createdAt    DateTime @default(now())
+  project      Project  @relation(fields: [jobId], references: [id])
+  client       User     @relation("ClientReviews", fields: [clientId], references: [id])
+  freelancer   User     @relation("FreelancerReviews", fields: [freelancerId], references: [id])
+}
+
+model Escrow {
+  id        String       @id @default(uuid())
+  jobId     Int          @unique
+  amount    Float
+  status    EscrowStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model JobCategory {
+  id   String @id @default(uuid())
+  name String
+}
+
+model Skill {
+  id       String    @id @default(uuid())
+  name     String
+  profiles Profile[] @relation("ProfileSkills")
+}
+
+enum Role {
+  CLIENT
+  FREELANCER
+}
+
+enum ContractStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELED
+}
+
+enum ProjectStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum EscrowStatus {
+  PENDING
+  FUNDED
+  RELEASED
+  DISPUTED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  OTHER
+}
