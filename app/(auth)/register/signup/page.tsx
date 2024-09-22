@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
@@ -185,6 +186,7 @@ const SignupPage: React.FC = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
