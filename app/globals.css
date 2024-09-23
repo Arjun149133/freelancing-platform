@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #090f18;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #090f18;
     --foreground: #ededed;
   }
 }
@@ -25,8 +25,6 @@ body {
     text-wrap: balance;
   }
 }
- 
-
 
 @layer base {
   :root {
