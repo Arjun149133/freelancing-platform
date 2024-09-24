@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import SignOut from "@/components/SignOut";
 import { useEffect } from "react";
 
 const DashboardPage = async () => {
@@ -7,8 +8,14 @@ const DashboardPage = async () => {
     data: { user },
     error,
   } = await supabase.auth.getUser();
+  // console.log(user);
 
-  return <div>DashboardPage, hello {user?.user_metadata?.full_name} </div>;
+  return (
+    <div>
+      DashboardPage, hello {user?.user_metadata?.full_name}
+      <SignOut />
+    </div>
+  );
 };
 
 export default DashboardPage;

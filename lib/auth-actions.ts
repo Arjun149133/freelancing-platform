@@ -1,8 +1,6 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/utils/supabase/server";
 
 export async function login(formData: FormData) {
@@ -61,11 +59,12 @@ export async function signout() {
     redirect("/error");
   }
 
-  redirect("/logout");
+  redirect("/");
 }
 
 export async function signInWithGoogle() {
   const supabase = createClient();
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -73,13 +72,16 @@ export async function signInWithGoogle() {
         access_type: "offline",
         prompt: "consent",
       },
+      // Here we directly set the redirect to /dashboard after successful login
+      redirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/confirm`,
     },
   });
 
   if (error) {
-    console.log(error);
+    console.error(error);
     redirect("/error");
   }
 
+  // Redirect to Google's OAuth login page
   redirect(data.url);
 }

@@ -58,7 +58,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  // console.log(user);
+
+  // If user is not authenticated and trying to access /dashboard, redirect to login
+  if (
+    !user &&
+    request.nextUrl.pathname !== "/" &&
+    !request.nextUrl.pathname.startsWith("/register")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  if (
+    user &&
+    (request.nextUrl.pathname === "/" ||
+      request.nextUrl.pathname.startsWith("/register"))
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   return response;
 }

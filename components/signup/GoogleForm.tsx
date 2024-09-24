@@ -19,7 +19,7 @@ const GoogleForm = () => {
         </div>
         <span>Continue with Google</span>
       </Button>
-      <div className="w-full flex items-center mt-4 lg:w-1/2">
+      <div className="w-full flex items-center my-3 lg:w-1/2">
         <hr className="my-4 border-gray-600 w-full" />
         <span className="px-2 dark:text-gray-300">or</span>
         <hr className="my-4 border-gray-600 w-full" />

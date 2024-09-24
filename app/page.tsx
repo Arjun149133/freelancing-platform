@@ -1,35 +1,36 @@
 "use client";
+import WelcomePage from "@/components/welcomePage/WelcomePage";
 import { createClient } from "@/utils/supabase/client";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const supabase = createClient();
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true);
       const {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
+      setLoading(false);
       console.log(user);
     };
     fetchUser();
   }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
   if (user !== null) {
-    return (
-      <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-        hello&nbsp;
-        <code className="font-mono font-bold">
-          {user?.user_metadata?.full_name ?? "user"}!
-        </code>
-      </p>
-    );
+    redirect("/dashboard");
   }
   return (
-    <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-      Get started editing&nbsp;
-      <code className="font-mono font-bold">app/page.tsx</code>
-    </p>
+    <div>
+      <WelcomePage />
+    </div>
   );
 };
 

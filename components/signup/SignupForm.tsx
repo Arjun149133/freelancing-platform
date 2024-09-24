@@ -15,20 +15,17 @@ import GoogleForm from "./GoogleForm";
 
 export default function SignupForm() {
   return (
-    <div>
+    <div className="">
       <GoogleForm />
-      <Tabs defaultValue="signup" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2 bg-black">
+      <Tabs defaultValue="signup" className="w-[400px] ">
+        <TabsList className="grid w-full grid-cols-2 ">
           <TabsTrigger value="signup">SignUp</TabsTrigger>
           <TabsTrigger value="login">Login</TabsTrigger>
         </TabsList>
         <TabsContent value="signup">
-          <Card className=" bg-black text-slate-100 border border-black">
+          <Card className="">
             <CardHeader>
-              <CardTitle>SignUp</CardTitle>
-              <CardDescription>
-                Make changes to your signup here. Click save when you're done.
-              </CardDescription>
+              <CardTitle className=" font-bold">SignUp</CardTitle>
             </CardHeader>
             <CardContent>
               <form action={signUp} className="space-y-2">
@@ -38,7 +35,15 @@ export default function SignupForm() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="password">Password</Label>
-                  <Input name="password" defaultValue="" />
+                  <Input name="password" type="password" defaultValue="" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    name="confirmPassword"
+                    type="password"
+                    defaultValue=""
+                  />
                 </div>
                 <Button type="submit" className="">
                   submit
@@ -48,24 +53,19 @@ export default function SignupForm() {
           </Card>
         </TabsContent>
         <TabsContent value="login">
-          <Card className=" bg-black text-slate-200 border border-black">
+          <Card className="   ">
             <CardHeader>
-              <CardTitle>Login</CardTitle>
-              <CardDescription>
-                Change your login here. After saving, you'll be logged out.
-              </CardDescription>
+              <CardTitle className=" font-bold">Login</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <form action="" className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" defaultValue="arj@gmail.com" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="password">Password</Label>
-                  <Input id="password" defaultValue="Pedro Duarte" />
-                </div>
-              </form>
+              <div className="space-y-1">
+                <Label htmlFor="email">Email</Label>
+                <Input name="email" defaultValue="" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="password">Password</Label>
+                <Input name="password" type="password" defaultValue="" />
+              </div>
             </CardContent>
             <CardFooter>
               <Button>Save login</Button>
