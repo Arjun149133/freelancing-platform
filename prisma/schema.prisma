@@ -17,9 +17,10 @@ model User {
   role                Role       @default(FREELANCER)
   createdAt           DateTime?  @default(now())
   updatedAt           DateTime?  @updatedAt
+  projects            Project[] //projects user working on
   profile             Profile?
   proposals           Proposal[]
-  previousWork        Work[]
+  previousWork        Work[] //previous work on the platform
   reviewsGiven        Review[]   @relation("ClientReviews")
   reviewsReceived     Review[]   @relation("FreelancerReviews")
   clientContracts     Contract[] @relation("ClientContracts")
@@ -57,7 +58,7 @@ model Profile {
   bio               String?
   profilePictureUrl String?
   skills            Skill[]       @relation("ProfileSkills")
-  experience        Experience[]  @relation("ProfileExperience")
+  experience        Experience[]  @relation("ProfileExperience") // real world experience
   education         Education[]   @relation("ProfileEducation")
   certificates      Certificate[]
   createdAt         DateTime      @default(now())
@@ -154,10 +155,10 @@ model Project {
   description  String
   budget       Float
   clientId     String
-  freelancerId String?
+  freelancerId User[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  categoryId   Int
+  jobCategory  Category //jobcategory
   Review       Review[]
   Contract     Contract[]
 }
@@ -196,11 +197,6 @@ model Escrow {
   updatedAt DateTime     @updatedAt
 }
 
-model JobCategory {
-  id   String @id @default(uuid())
-  name String
-}
-
 model Skill {
   id       String    @id @default(uuid())
   name     String
@@ -210,6 +206,16 @@ model Skill {
 enum Role {
   CLIENT
   FREELANCER
+}
+
+enum Category {
+  WEB_DEVELOPMENT
+  MOBILE_DEVELOPMENT
+  GRAPHIC_DESIGN
+  DIGITAL_MARKETING
+  WRITING
+  VIDEO_EDITING
+  OTHER
 }
 
 enum ContractStatus {

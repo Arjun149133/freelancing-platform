@@ -35,7 +35,7 @@ const useAuth = () => {
     };
   }, [setUser]);
 
-  return null; // No UI needed for this hook
+  return null;
 };
 
 export default useAuth;
