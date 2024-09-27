@@ -1,6 +1,27 @@
 import prisma from "@/db/prisma";
-import { createClient } from "@/utils/supabase/server";
 import { NextResponse, type NextRequest } from "next/server";
+import { z } from "zod";
+
+const projectSchema = z.object({
+  title: z.string().min(1, { message: "Title is required." }),
+  description: z.string().min(1, { message: "Description is required." }),
+  budget: z.number().positive("Budget must be a positive number."),
+  jobCategory: z.enum([
+    "WEB_DEVELOPMENT",
+    "MOBILE_DEVELOPMENT",
+    "GRAPHIC_DESIGN",
+    "DIGITAL_MARKETING",
+    "WRITING",
+    "VIDEO_EDITING",
+    "OTHER",
+  ]),
+});
+
+const requestSchema = z.object({
+  project: projectSchema,
+  userRole: z.enum(["CLIENT", "FREELANCER"]),
+  userId: z.string({ message: "User ID is required." }),
+});
 
 export async function GET(req: NextRequest) {
   // Handle GET requests if needed
@@ -8,41 +29,37 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
-  const project = await req.json();
+  const { project, userRole, userId } = await req.json();
 
-  // Get the user from Supabase
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+  const parsedResult = requestSchema.safeParse({ project, userRole, userId });
 
-  if (authError) {
-    return NextResponse.json(
-      { error: "Authentication failed." },
-      { status: 401 }
-    );
+  if (!parsedResult.success) {
+    const errors = parsedResult.error.errors.map((err) => err.message);
+    return NextResponse.json({ errors }, { status: 400 });
   }
 
-  // Ensure user is authenticated
-  if (!user) {
+  if (parsedResult.data.userRole === "FREELANCER") {
     return NextResponse.json(
-      { error: "User not authenticated." },
-      { status: 401 }
+      {
+        error: "Freelancers cannot create projects.",
+      },
+      {
+        status: 403,
+      }
     );
   }
 
   try {
     const data = await prisma.project.create({
       data: {
-        ...project,
-        clientId: user.id, // Use user.id directly since it's guaranteed to exist now
+        ...parsedResult.data.project,
+        clientId: parsedResult.data.userId,
       },
     });
 
     return NextResponse.json({ data }, { status: 201 });
   } catch (error) {
-    console.error("Error creating project:", error); // Log the error for debugging
+    console.error("Error creating project:", error);
     return NextResponse.json(
       { error: "Failed to create project." },
       { status: 500 }
