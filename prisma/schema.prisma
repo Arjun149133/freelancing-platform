@@ -122,7 +122,6 @@ model Contract {
 
 model Experience {
   id          String    @id @default(uuid())
-  userId      String // The user who owns this experience
   companyName String // Name of the company or organization
   role        String // Job title or role of the user
   startDate   DateTime // When the user started this job
