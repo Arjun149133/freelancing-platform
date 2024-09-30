@@ -1,31 +1,12 @@
 import prisma from "@/db/prisma";
+import { requestSchema } from "@/schemas/projectSchema";
 import { NextResponse, type NextRequest } from "next/server";
-import { z } from "zod";
-
-const projectSchema = z.object({
-  title: z.string().min(1, { message: "Title is required." }),
-  description: z.string().min(1, { message: "Description is required." }),
-  budget: z.number().positive("Budget must be a positive number."),
-  jobCategory: z.enum([
-    "WEB_DEVELOPMENT",
-    "MOBILE_DEVELOPMENT",
-    "GRAPHIC_DESIGN",
-    "DIGITAL_MARKETING",
-    "WRITING",
-    "VIDEO_EDITING",
-    "OTHER",
-  ]),
-});
-
-const requestSchema = z.object({
-  project: projectSchema,
-  userRole: z.enum(["CLIENT", "FREELANCER"]),
-  userId: z.string({ message: "User ID is required." }),
-});
 
 export async function GET(req: NextRequest) {
   // Handle GET requests if needed
-  return NextResponse.json({ message: "GET request not implemented." });
+  return NextResponse.json({
+    message: "GET request not implemented(for this route not required).",
+  });
 }
 
 export async function POST(req: NextRequest) {
