@@ -149,29 +149,31 @@ model Work {
 }
 
 model Project {
-  id           String     @id @default(uuid())
-  title        String
-  description  String
-  budget       Float
-  clientId     String
-  freelancerId User[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  jobCategory  Category //jobcategory
-  Review       Review[]
-  Contract     Contract[]
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  budget      Float
+  clientId    String
+  freelancers User[]
+  proposals   Proposal[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  jobCategory Category //jobcategory
+  reviews     Review[]
+  contracts   Contract[]
 }
 
 model Proposal {
   id           String         @id @default(uuid())
-  jobId        Int
-  freelancerId Int
+  projectId    String
+  freelancerId String
   coverLetter  String
+  deliveryDate DateTime
   price        Float
   createdAt    DateTime       @default(now())
   status       ProposalStatus @default(PENDING)
-  user         User           @relation(fields: [userId], references: [id])
-  userId       String
+  user         User           @relation(fields: [freelancerId], references: [id])
+  project      Project        @relation(fields: [projectId], references: [id])
 }
 
 model Review {

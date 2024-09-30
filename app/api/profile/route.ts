@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "User not found." }, { status: 404 });
   }
 
-  console.log("Creating Profile: ", parsedProfile.data);
-
   try {
     const data = await prisma.profile.create({
       data: {
