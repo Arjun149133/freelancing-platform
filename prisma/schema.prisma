@@ -156,10 +156,10 @@ model Project {
   clientId    String
   freelancers User[]
   proposals   Proposal[]
+  reviews     Review[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   jobCategory Category //jobcategory
-  reviews     Review[]
   contracts   Contract[]
 }
 
@@ -177,16 +177,16 @@ model Proposal {
 }
 
 model Review {
-  id           String   @id @default(uuid())
-  jobId        String
-  clientId     String
-  freelancerId String
-  rating       Float
-  feedback     String
-  createdAt    DateTime @default(now())
-  project      Project  @relation(fields: [jobId], references: [id])
-  client       User     @relation("ClientReviews", fields: [clientId], references: [id])
-  freelancer   User     @relation("FreelancerReviews", fields: [freelancerId], references: [id])
+  id               String   @id @default(uuid())
+  projectId        String
+  reviewGiverId    String
+  reviewReceiverId String
+  rating           Float
+  feedback         String
+  createdAt        DateTime @default(now())
+  project          Project  @relation(fields: [projectId], references: [id])
+  reviewGiver      User     @relation("ClientReviews", fields: [reviewGiverId], references: [id])
+  reviewReceiver   User     @relation("FreelancerReviews", fields: [reviewReceiverId], references: [id])
 }
 
 model Escrow {
