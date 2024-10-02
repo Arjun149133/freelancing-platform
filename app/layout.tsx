@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import RecoilContextProvider from "@/Providers/RecoilContextProvider";
+import RecoilContextProvider from "@/providers/RecoilContextProvider";
 import AuthListener from "@/components/AuthListener";
 
 const geistSans = localFont({
