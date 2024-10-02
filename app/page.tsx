@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+
+
 const Home = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
