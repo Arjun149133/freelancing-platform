@@ -1,6 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
 import SignOut from "@/components/SignOut";
-import { useEffect } from "react";
 
 const DashboardPage = async () => {
   const supabase = createClient();

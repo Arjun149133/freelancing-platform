@@ -14,12 +14,13 @@ model User {
   last_name           String
   email               String     @unique
   password            String?
-  role                Role
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
+  role                Role       @default(FREELANCER)
+  createdAt           DateTime?  @default(now())
+  updatedAt           DateTime?  @updatedAt
+  projects            Project[] //projects user working on
   profile             Profile?
   proposals           Proposal[]
-  previousWork        Work[]
+  previousWork        Work[] //previous work on the platform
   reviewsGiven        Review[]   @relation("ClientReviews")
   reviewsReceived     Review[]   @relation("FreelancerReviews")
   clientContracts     Contract[] @relation("ClientContracts")
@@ -57,7 +58,7 @@ model Profile {
   bio               String?
   profilePictureUrl String?
   skills            Skill[]       @relation("ProfileSkills")
-  experience        Experience[]  @relation("ProfileExperience")
+  experience        Experience[]  @relation("ProfileExperience") // real world experience
   education         Education[]   @relation("ProfileEducation")
   certificates      Certificate[]
   createdAt         DateTime      @default(now())
@@ -121,7 +122,6 @@ model Contract {
 
 model Experience {
   id          String    @id @default(uuid())
-  userId      String // The user who owns this experience
   companyName String // Name of the company or organization
   role        String // Job title or role of the user
   startDate   DateTime // When the user started this job
@@ -149,42 +149,44 @@ model Work {
 }
 
 model Project {
-  id           String     @id @default(uuid())
-  title        String
-  description  String
-  budget       Float
-  clientId     String
-  freelancerId String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  categoryId   Int
-  Review       Review[]
-  Contract     Contract[]
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  budget      Float
+  clientId    String
+  freelancers User[]
+  proposals   Proposal[]
+  reviews     Review[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  jobCategory Category //jobcategory
+  contracts   Contract[]
 }
 
 model Proposal {
   id           String         @id @default(uuid())
-  jobId        Int
-  freelancerId Int
+  projectId    String
+  freelancerId String
   coverLetter  String
+  deliveryDate DateTime
   price        Float
   createdAt    DateTime       @default(now())
   status       ProposalStatus @default(PENDING)
-  user         User           @relation(fields: [userId], references: [id])
-  userId       String
+  user         User           @relation(fields: [freelancerId], references: [id])
+  project      Project        @relation(fields: [projectId], references: [id])
 }
 
 model Review {
-  id           String   @id @default(uuid())
-  jobId        String
-  clientId     String
-  freelancerId String
-  rating       Float
-  feedback     String
-  createdAt    DateTime @default(now())
-  project      Project  @relation(fields: [jobId], references: [id])
-  client       User     @relation("ClientReviews", fields: [clientId], references: [id])
-  freelancer   User     @relation("FreelancerReviews", fields: [freelancerId], references: [id])
+  id               String   @id @default(uuid())
+  projectId        String
+  reviewGiverId    String
+  reviewReceiverId String
+  rating           Float
+  feedback         String
+  createdAt        DateTime @default(now())
+  project          Project  @relation(fields: [projectId], references: [id])
+  reviewGiver      User     @relation("ClientReviews", fields: [reviewGiverId], references: [id])
+  reviewReceiver   User     @relation("FreelancerReviews", fields: [reviewReceiverId], references: [id])
 }
 
 model Escrow {
@@ -196,11 +198,6 @@ model Escrow {
   updatedAt DateTime     @updatedAt
 }
 
-model JobCategory {
-  id   String @id @default(uuid())
-  name String
-}
-
 model Skill {
   id       String    @id @default(uuid())
   name     String
@@ -210,6 +207,16 @@ model Skill {
 enum Role {
   CLIENT
   FREELANCER
+}
+
+enum Category {
+  WEB_DEVELOPMENT
+  MOBILE_DEVELOPMENT
+  GRAPHIC_DESIGN
+  DIGITAL_MARKETING
+  WRITING
+  VIDEO_EDITING
+  OTHER
 }
 
 enum ContractStatus {

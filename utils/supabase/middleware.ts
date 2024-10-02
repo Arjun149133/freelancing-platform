@@ -58,6 +58,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
     error,
   } = await supabase.auth.getUser();
+  // console.log(user);
 
   // If user is not authenticated and trying to access /dashboard, redirect to login
   if (

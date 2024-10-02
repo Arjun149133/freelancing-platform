@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import RecoilContextProvider from "@/Providers/RecoilContextProvider";
+
 import {Onest } from 'next/font/google'
 
 const onest = Onest({
@@ -9,6 +10,9 @@ const onest = Onest({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
   display : 'swap'
 })
+
+import AuthListener from "@/components/AuthListener";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,7 +41,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased 
           ` }
       >
-        <RecoilContextProvider>{children}</RecoilContextProvider>
+        <RecoilContextProvider>
+          <AuthListener />
+          {children}
+        </RecoilContextProvider>
       </body>
     </html>
   );
