@@ -27,6 +27,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/types/app/(auth)/login/page.ts"
-  ],
+, "declarations.d.ts"  ],
   "exclude": ["node_modules"]
 }
