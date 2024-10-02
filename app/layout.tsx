@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+
 import RecoilContextProvider from "@/Providers/RecoilContextProvider";
 
 import {Onest } from 'next/font/google'
@@ -10,6 +11,9 @@ const onest = Onest({
   weight: ['200', '300', '400', '500', '600', '700', '800'],
   display : 'swap'
 })
+
+
+import RecoilContextProvider from "@/providers/RecoilContextProvider";
 
 import AuthListener from "@/components/AuthListener";
 
