@@ -6,9 +6,8 @@ import WelcomeNav from "./WelcomeNav";
 
 const WelcomePage = () => {
   return (
-    <div >
+    <div>
       <WelcomeNav />
-      WelcomePage
       <Slide />
       <Secondary />
       <CallforAction />

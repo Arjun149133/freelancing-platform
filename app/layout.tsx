@@ -13,6 +13,7 @@ const onest = Onest({
 import RecoilContextProvider from "@/providers/RecoilContextProvider";
 
 import AuthListener from "@/components/AuthListener";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +42,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased 
           `}
       >
+        <Script
+          id="razorpay-checkout-js"
+          src="https://checkout.razorpay.com/v1/checkout.js"
+        />
         <RecoilContextProvider>
           <AuthListener />
           {children}
