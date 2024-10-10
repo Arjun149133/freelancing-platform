@@ -129,6 +129,35 @@ model Contract {
   freelancer   User           @relation("FreelancerContracts", fields: [freelancerId], references: [id])
   payments     Payment[]
   work         Work[]
+  escrow       Escrow[]
+  // milestones   Milestone[]
+}
+
+// model Milestone {
+//   id          String          @id @default(uuid())
+//   contractId  String // Reference to the contract
+//   title       String // Name or description of the milestone
+//   description String? // Optional detailed description
+//   amount      Float // Amount allocated for this milestone
+//   dueDate     DateTime? // Due date for milestone completion
+//   status      MilestoneStatus @default(PENDING) // PENDING, IN_PROGRESS, COMPLETED, RELEASED, DISPUTED
+//   createdAt   DateTime        @default(now())
+//   updatedAt   DateTime        @updatedAt
+//   escrowId    String          @unique
+//   contract    Contract        @relation(fields: [contractId], references: [id])
+//   escrow      Escrow          @relation(fields: [escrowId], references: [id])
+// }
+
+model Escrow {
+  id         String       @id @default(uuid())
+  contractId String // Reference to the related contract
+  // milestoneId String? // Optional: For milestone-based releases
+  amount     Float
+  status     EscrowStatus @default(PENDING) // PENDING, FUNDED, RELEASED, DISPUTED
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  contract   Contract     @relation(fields: [contractId], references: [id])
+  // milestone   Milestone?
 }
 
 model Experience {
@@ -200,15 +229,6 @@ model Review {
   reviewReceiver   User     @relation("FreelancerReviews", fields: [reviewReceiverId], references: [id])
 }
 
-model Escrow {
-  id        String       @id @default(uuid())
-  jobId     Int          @unique
-  amount    Float
-  status    EscrowStatus @default(PENDING)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
 model Skill {
   id       String    @id @default(uuid())
   name     String
@@ -218,6 +238,14 @@ model Skill {
 enum Role {
   CLIENT
   FREELANCER
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  RELEASED
+  DISPUTED
 }
 
 enum Category {

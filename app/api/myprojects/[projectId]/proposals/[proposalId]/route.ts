@@ -132,8 +132,21 @@ export async function POST(
       },
     });
 
+    const escrow = await prisma.escrow.create({
+      data: {
+        contractId: newContract.id,
+        amount: updatedProposal.price,
+        status: "FUNDED",
+      },
+    });
+
     return NextResponse.json(
-      { proposal: updatedProposal, contract: newContract },
+      {
+        proposal: updatedProposal,
+        contract: newContract,
+        payment: payment,
+        escrow: escrow,
+      },
       { status: 200 }
     );
   } catch (error) {
