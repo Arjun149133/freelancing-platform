@@ -94,11 +94,22 @@ model Payment {
   userId        String // Reference to the user (client or freelancer)
   amount        Float // Amount being paid
   status        PaymentStatus @default(PENDING) // Status of the payment
-  paymentMethod PaymentMethod // Method of payment
+  paymentMethod PaymentMethod @default(RAZORPAY)
+  razorpayId    String? // Reference to Razorpay payment (optional)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   contract      Contract      @relation(fields: [contractId], references: [id])
   user          User          @relation(fields: [userId], references: [id])
+  razorpay      Razorpay?     @relation(fields: [razorpayId], references: [id]) // Razorpay relation
+}
+
+model Razorpay {
+  id        String    @id @default(uuid())
+  orderId   String
+  paymentId String    @unique
+  signature String
+  createdAt DateTime  @default(now())
+  payment   Payment[]
 }
 
 model Contract {
@@ -257,6 +268,7 @@ enum PaymentMethod {
   CREDIT_CARD
   DEBIT_CARD
   PAYPAL
+  RAZORPAY
   BANK_TRANSFER
   OTHER
 }

@@ -58,8 +58,15 @@ function Payment() {
             headers: { "Content-Type": "application/json" },
           });
           const res = await result.json();
-          if (res.isOk) alert("payment succeed");
-          else {
+          if (res.isOk) {
+            alert("Payment successful");
+            console.log(
+              "Payment successful",
+              response.razorpay_payment_id,
+              response.razorpay_order_id,
+              response.razorpay_signature
+            );
+          } else {
             alert(res.message);
           }
         },

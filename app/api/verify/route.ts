@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import prisma from "@/db/prisma";
 
 const generatedSignature = (
   razorpayOrderId: string,
@@ -29,8 +30,12 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
+
   return NextResponse.json(
-    { message: "payment verified successfully", isOk: true },
+    {
+      message: "payment verification success",
+      isOk: true,
+    },
     { status: 200 }
   );
 }

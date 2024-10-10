@@ -29,18 +29,23 @@ export async function GET(
   }
 }
 
-const statusSchema = z.enum(["ACCEPTED", "REJECTED", "PENDING"]);
+const statusSchema = z.object({
+  status: z.enum(["ACCEPTED", "REJECTED", "PENDING"]).optional(),
+  orderCreationId: z.string(),
+  razorpayPaymentId: z.string(),
+  razorpaySignature: z.string(),
+});
 
 export async function POST(
   req: Request,
   { params }: { params: { proposalId: string; projectId: string } }
 ) {
   const { proposalId, projectId } = params;
-  const status = await req.json();
-  const parsedStatus = statusSchema.safeParse(status);
+  const schema = await req.json();
+  const parsedSchema = statusSchema.safeParse(schema);
   const user = await getUser();
 
-  if (!parsedStatus.success) {
+  if (!parsedSchema.success) {
     return NextResponse.json(
       {
         error: "Invalid status.",
@@ -83,11 +88,11 @@ export async function POST(
         id: proposalId,
       },
       data: {
-        status: parsedStatus.data,
+        status: parsedSchema.data.status || "PENDING",
       },
     });
 
-    if (parsedStatus.data !== "ACCEPTED") {
+    if (parsedSchema.data.status !== "ACCEPTED") {
       return NextResponse.json({ proposal: updatedProposal }, { status: 200 });
     }
 
@@ -98,6 +103,32 @@ export async function POST(
         clientId: project?.clientId,
         amount: updatedProposal.price,
         status: "ACTIVE",
+      },
+    });
+
+    const payment = await prisma.payment.create({
+      data: {
+        contractId: newContract.id,
+        userId: project.clientId,
+        amount: updatedProposal.price,
+      },
+    });
+
+    const razorpay = await prisma.razorpay.create({
+      data: {
+        orderId: parsedSchema.data.orderCreationId,
+        paymentId: parsedSchema.data.razorpayPaymentId,
+        signature: parsedSchema.data.razorpaySignature,
+      },
+    });
+
+    await prisma.payment.update({
+      where: {
+        id: payment.id,
+      },
+      data: {
+        razorpayId: razorpay.id,
+        status: "COMPLETED",
       },
     });
 
