@@ -60,6 +60,7 @@ model Account_Details {
   accountId       String           @unique
   contactId       String
   account_type    String
+  fund_account_id String
   bank_account    Bank_Account?
   razorpayAccount Razorpay_Account @relation(fields: [accountId], references: [id])
 }

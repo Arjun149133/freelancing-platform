@@ -77,7 +77,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ data: razorpayAccount }, { status: 201 });
+    return NextResponse.json(
+      { razorpayAccount: razorpayAccount },
+      { status: 201 }
+    );
   } catch (error) {
     console.log("Error Creating Contact: ", error);
     return NextResponse.json({ error: "An error occurred." }, { status: 500 });

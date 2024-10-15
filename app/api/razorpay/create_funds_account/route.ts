@@ -60,8 +60,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Contact Details: ", contact_details);
-
     const res = await axios.post(
       "https://api.razorpay.com/v1/fund_accounts",
       {
@@ -85,8 +83,6 @@ export async function POST(req: NextRequest) {
       return { error: "An error occurred." };
     }
 
-    console.log("Razorpay Funds Account: ", res.data);
-
     const account = await prisma.razorpay_Account.update({
       where: {
         id: razorpayAccount.id,
@@ -96,6 +92,7 @@ export async function POST(req: NextRequest) {
           create: {
             account_type: res.data.account_type,
             contactId: contact_details.contactId,
+            fund_account_id: res.data.id,
             bank_account: {
               create: {
                 bank_name: res.data.bank_account.bank_name,
@@ -112,6 +109,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ account: account }, { status: 201 });
   } catch (error) {
     console.log("Error Creating Funds Account: ", error);
-    return { error: "An error occurred." };
+    return NextResponse.json({ error: "An error occurred." }, { status: 500 });
   }
 }
