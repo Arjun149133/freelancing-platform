@@ -46,7 +46,10 @@ export default function RootLayout({
           id="razorpay-checkout-js"
           src="https://checkout.razorpay.com/v1/checkout.js"
         />
-        <RecoilContextProvider>{children}</RecoilContextProvider>
+        <RecoilContextProvider>
+          <AuthListener />
+          {children}
+        </RecoilContextProvider>
       </body>
     </html>
   );

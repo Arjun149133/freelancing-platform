@@ -50,14 +50,13 @@ export async function POST(req: NextRequest) {
         },
       }
     );
-    console.log("Razorpay Response11: ", res.data);
+
     if (res.data.error) {
       return NextResponse.json(
         { error: "An error occurred." },
         { status: 500 }
       );
     }
-    console.log("Razorpay Response: ", res.data);
 
     const razorpayAccount = await prisma.razorpay_Account.create({
       data: {

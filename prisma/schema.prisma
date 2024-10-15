@@ -65,13 +65,14 @@ model Account_Details {
 }
 
 model Bank_Account {
-  id             String @id @default(uuid())
-  bank_name      String
-  account_number String @unique
-  ifsc_code      String
-  name           String
+  id               String @id @default(uuid())
+  bank_name        String
+  account_number   String
+  ifsc_code        String
+  name             String
+  accountDetailsId String @unique
 
-  account_details Account_Details @relation(fields: [account_number], references: [id])
+  account_details Account_Details @relation(fields: [accountDetailsId], references: [id])
 }
 
 model Chat {
