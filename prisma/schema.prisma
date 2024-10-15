@@ -9,27 +9,69 @@ datasource db {
 }
 
 model User {
-  id                  String     @id @default(uuid())
+  id                  String            @id @default(uuid())
   first_name          String
   last_name           String
-  email               String     @unique
+  email               String            @unique
   password            String?
-  role                Role       @default(FREELANCER)
-  balance             Float      @default(0)
-  createdAt           DateTime?  @default(now())
-  updatedAt           DateTime?  @updatedAt
+  role                Role              @default(FREELANCER)
+  balance             Float             @default(0)
+  createdAt           DateTime?         @default(now())
+  updatedAt           DateTime?         @updatedAt
   projects            Project[] //projects user working on
   profile             Profile?
   proposals           Proposal[]
   previousWork        Work[] //previous work on the platform
-  reviewsGiven        Review[]   @relation("ClientReviews")
-  reviewsReceived     Review[]   @relation("FreelancerReviews")
-  clientContracts     Contract[] @relation("ClientContracts")
-  freelancerContracts Contract[] @relation("FreelancerContracts")
+  reviewsGiven        Review[]          @relation("ClientReviews")
+  reviewsReceived     Review[]          @relation("FreelancerReviews")
+  clientContracts     Contract[]        @relation("ClientContracts")
+  freelancerContracts Contract[]        @relation("FreelancerContracts")
   payments            Payment[]
-  user1Chats          Chat[]     @relation("UserChatsUser1")
-  user2Chats          Chat[]     @relation("UserChatsUser2")
-  sentMessages        Message[]  @relation("SentMessages")
+  user1Chats          Chat[]            @relation("UserChatsUser1")
+  user2Chats          Chat[]            @relation("UserChatsUser2")
+  sentMessages        Message[]         @relation("SentMessages")
+  razorpayAccount     Razorpay_Account?
+}
+
+model Razorpay_Account {
+  id              String            @id @default(uuid())
+  userId          String            @unique
+  contact_details Contact_Details[]
+  account_details Account_Details?
+  user            User              @relation(fields: [userId], references: [id])
+}
+
+model Contact_Details {
+  id          String   @id @default(uuid())
+  name        String
+  contact     String
+  email       String
+  type        String
+  referenceId String //nothing to do with any references in this database. Just a reference to the user's contact
+  createdAt   DateTime @default(now())
+  contactId   String
+  razorpayId  String   @unique
+
+  razorpayAccount Razorpay_Account @relation(fields: [razorpayId], references: [id])
+}
+
+model Account_Details {
+  id              String           @id @default(uuid())
+  accountId       String           @unique
+  contactId       String
+  account_type    String
+  bank_account    Bank_Account?
+  razorpayAccount Razorpay_Account @relation(fields: [accountId], references: [id])
+}
+
+model Bank_Account {
+  id             String @id @default(uuid())
+  bank_name      String
+  account_number String @unique
+  ifsc_code      String
+  name           String
+
+  account_details Account_Details @relation(fields: [account_number], references: [id])
 }
 
 model Chat {
