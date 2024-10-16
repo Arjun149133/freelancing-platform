@@ -6,10 +6,21 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { userId: string } }
 ) {
-  const user = await getUser();
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+  const { userId } = params;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
 
-  return NextResponse.json({ user }, { status: 200 });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ user }, { status: 200 });
+  } catch (error) {
+    console.log("Error in getting user: ", error);
+    return NextResponse.json({ error: "An error occurred." }, { status: 500 });
+  }
 }
