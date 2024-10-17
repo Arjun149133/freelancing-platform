@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import SignOut from "@/components/SignOut";
+import Navbar from "@/components/navbar/Navbar";
 
 const DashboardPage = async () => {
   const supabase = createClient();
@@ -11,6 +12,7 @@ const DashboardPage = async () => {
 
   return (
     <div>
+      <Navbar />
       DashboardPage, hello {user?.user_metadata?.full_name}
       <SignOut />
     </div>
