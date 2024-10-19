@@ -1,7 +1,7 @@
-import { Edit2Icon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import EditButton from "./EditButton";
 
 const ProfileCard = () => {
   return (
@@ -14,9 +14,7 @@ const ProfileCard = () => {
           height={100}
           width={100}
         />
-        <span className=" absolute top-12 left-14 bg-slate-200 rounded-full p-2 cursor-pointer">
-          <Edit2Icon className=" h-4 w-4" />
-        </span>
+        <EditButton className=" top-12 left-14 " />
       </div>
       <div className="flex flex-col items-center p-1 py-3">
         <h1 className=" text-xl font-bold">Akshitha Y.</h1>

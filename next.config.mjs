@@ -4,7 +4,7 @@ import withVideos from "next-videos";
 const nextConfig = {
   //www.google.com image
   images: {
-    domains: ["www.google.com"],
+    domains: ["www.google.com", "www.upwork.com"],
   },
 };
 

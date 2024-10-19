@@ -1,11 +1,7 @@
 import { ProfilePage } from "@/components/profilePage/ProfilePage";
 
 const page = () => {
-  return (
-    <div className="">
-      <ProfilePage />
-    </div>
-  );
+  return <ProfilePage />;
 };
 
 export default page;
